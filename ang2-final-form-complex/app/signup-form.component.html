@@ -1,0 +1,62 @@
+<div class="columnLeft">
+
+<form [formGroup]="formObject" (ngSubmit)="signup()" class="template-form form well">
+    <table class="table ">
+        <tbody>
+            <tr>
+                <th><label for="userName">User Name:</label></th>
+                <td>
+                    <input (blur)="log()"  formControlName="username"   type="text" size="25" id="username">
+                    <div *ngIf="formObject.controls.username.pending">Checking ....</div>
+                    <div *ngIf="formObject.controls.username.touched && formObject.controls.username.errors">
+                        <div class="red-color errorInfo" *ngIf="formObject.controls.username.errors.required">The name is required</div>
+                        <div class="red-color errorInfo" *ngIf="formObject.controls.username.errors.hasSpaces">Cannot contain spaces</div>
+                        <div class="red-color errorInfo" *ngIf="formObject.controls.username.errors.shouldBeUnique">Username not unique</div>
+                        <div class="red-color errorInfo" *ngIf="formObject.controls.username.errors.minlength">Length must be > {{formObject.controls.username.errors.minlength.requiredLength}}</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="password">Password:</label></th>
+                <td>
+                    <input   formControlName="password"  type="text" size="25"  id="password">
+                    
+                </td>
+            </tr>
+
+             <tr>
+                <th><label for="application">Application:</label></th>
+                <td>
+                    <select   formControlName="application"     id="selection">
+                        <option>Manny</option>
+                        <option>Moe</option>
+                        <option>Jack</option>
+                    </select>
+                    <em>(select to see observable in action)</em>
+                </td>
+            </tr>
+
+            <tr>
+
+
+                <td colspan="2">
+
+                    <input class="btn btn-large btn-primary" [disabled]="!formObject.valid"  value="Submit" type="submit">
+                    <div *ngIf="formObject.controls.username.errors">
+                        <div class="red-color errorInfo" *ngIf="formObject.controls.username.errors.failedLogin">You blew it moron</div>
+                       
+                    </div>
+                </td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</form>
+</div>
+<div class="columnRight">
+    {{applicationMessage}}
+</div>

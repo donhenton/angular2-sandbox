@@ -1,0 +1,14 @@
+.fi
+{
+    font-size: 30px;
+    vertical-align: text-top;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.fi.isFavorite
+{
+     
+    color: deeppink;
+    
+}

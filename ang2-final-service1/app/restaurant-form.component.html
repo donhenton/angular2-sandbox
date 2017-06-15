@@ -1,0 +1,45 @@
+<div class="row">
+
+<form #mainForm="ngForm" (ngSubmit)="onSubmit(mainForm.form)" class="template-form form well">
+    <table class="table ">
+        <tbody>
+            <tr>
+                <th><label for="id">Id:</label></th>
+                <td>
+                    <input ngModel name="id"   #id="ngModel" required   type="text" size="10"
+                        id="id">
+                    <div *ngIf="id.touched && id.errors">
+                        <div class="red-color errorInfo" *ngIf="id.errors.required">The name is required</div>
+                        
+                    </div>
+                </td>
+            </tr>
+            
+
+            <tr>
+
+
+                <td colspan="2">
+
+                    <input class="btn btn-large btn-primary" [disabled]="!mainForm.valid" value="Input Submit" type="submit">
+                </td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</form>
+
+</div>
+<div class="row">
+    <div class=" well columnLeft">
+        <textarea id="result-text">{{resultText}}</textarea>
+    </div>
+    <div class="columnRight">
+        
+        <div *ngIf="isLoading"><img src="css/imgs/scroll-loader.gif" /></div>
+    </div>
+</div>

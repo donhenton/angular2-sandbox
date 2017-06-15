@@ -1,0 +1,44 @@
+<html>
+
+<head>
+  <title>Template Form</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="css/reset.css">
+  <link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+  <link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+  <link href="bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+   <link href="css/restaurantStyles.css" rel="stylesheet" type="text/css"/>
+
+  
+  <!-- 1. Load libraries -->
+  <!-- Polyfill(s) for older browsers -->
+  <script src="node_modules/core-js/client/shim.min.js"></script>
+  <script src="node_modules/zone.js/dist/zone.js"></script>
+  <script src="node_modules/reflect-metadata/Reflect.js"></script>
+  <script src="node_modules/systemjs/dist/system.src.js"></script>
+  <!-- 2. Configure SystemJS -->
+  <script src="systemjs.config.js"></script>
+  <script>
+    System.import('app').catch(function (err) { console.error(err); });
+  </script>
+</head>
+<!-- 3. Display the application -->
+
+<body>
+<header>
+ 
+</header>
+   
+     
+      <div class="container">
+      <restaurant-app>Loading...</restaurant-app>
+      </div>
+
+   
+
+</body>
+
+</html>

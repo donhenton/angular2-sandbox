@@ -1,0 +1,42 @@
+<form #mainForm="ngForm" (ngSubmit)="onSubmit(mainForm.form)" class="template-form form well">
+    <table class="table ">
+        <tbody>
+            <tr>
+                <th><label for="firstName">First Name:</label></th>
+                <td>
+                    <input ngModel name="firstName" (blur)="log(firstName)" #firstName="ngModel" required minlength="3" type="text" size="100"
+                        id="firstName">
+                    <div *ngIf="firstName.touched && firstName.errors">
+                        <div class="red-color errorInfo" *ngIf="firstName.errors.required">The name is required</div>
+                        <div class="red-color errorInfo" *ngIf="firstName.errors.minlength">Length must be > {{firstName.errors.minlength.requiredLength}}</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="comment">Comment:</label></th>
+                <td>
+
+                    <textarea id="comment" #comment="ngModel" ngModel name="comment" cols="100" rows="40"></textarea>
+                </td>
+            </tr>
+
+
+
+
+
+            <tr>
+
+
+                <td colspan="2">
+
+                    <input class="btn btn-large btn-primary" [disabled]="!mainForm.valid" value="Input Submit" type="submit">
+                </td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</form>

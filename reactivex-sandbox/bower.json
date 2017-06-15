@@ -1,0 +1,14 @@
+{
+  "name": "reactivex-sandbox",
+  "version": "1.0.0",
+  "main": "path/to/main.css",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "rxjs": "^4.1.0",
+    "jquery": "2.2.1"
+  },
+  "devDependencies": {}
+}
