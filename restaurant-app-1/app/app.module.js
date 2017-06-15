@@ -18,6 +18,7 @@ var restaurant_list_1 = require("./components/restaurant-list");
 var wait_indicator_1 = require("./components/wait-indicator");
 var restaurant_list_row_1 = require("./components/restaurant-list-row");
 var edit_restaurant_container_1 = require("./components/edit-restaurant-container");
+var edit_reviewDTO_container_1 = require("./components/edit-reviewDTO-container");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -27,7 +28,7 @@ AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule, forms_1.FormsModule, forms_1.ReactiveFormsModule, http_1.HttpModule],
         providers: [restaurant_service_1.RestaurantService, pubsub_service_1.default, restaurant_action_service_1.RestaurantActionService],
-        declarations: [restaurant_component_1.RestaurantComponent, restaurant_list_1.RestaurantList, wait_indicator_1.WaitIndicator,
+        declarations: [restaurant_component_1.RestaurantComponent, restaurant_list_1.RestaurantList, wait_indicator_1.WaitIndicator, edit_reviewDTO_container_1.EditReviewDTOContainer,
             edit_restaurant_container_1.EditRestaurantContainer, restaurant_list_row_1.RestaurantListRow],
         bootstrap: [restaurant_component_1.RestaurantComponent]
     })

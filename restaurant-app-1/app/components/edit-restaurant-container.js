@@ -28,6 +28,7 @@ var EditRestaurantContainer = (function () {
         this.sub = sub;
         this.backUp = null;
         this.actionState = null;
+        console.log("in restaurant con");
         this.editForm = fb.group({
             city: ['', forms_1.Validators.compose([forms_1.Validators.required, forms_1.Validators.minLength(3)])],
             state: ['', forms_1.Validators.compose([forms_1.Validators.required, forms_1.Validators.minLength(2)])],
@@ -42,7 +43,7 @@ var EditRestaurantContainer = (function () {
         this.newSubject
             = channel.subject("new." + sub.getRestaurantEditTopic());
         //looking for add.update.* or edit.update.*
-        this.subscription = channel.observe("*.update." + sub.getRestaurantEditTopic());
+        this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
         this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
         this.deleteRestaurantSubscription
             .subscribe(function (data) {
@@ -53,6 +54,7 @@ var EditRestaurantContainer = (function () {
         });
         this.subscription
             .subscribe(function (data) {
+            console.log("restaurant edit got " + data);
             _this.backUp = __assign({}, data.selectedRestaurant);
             delete _this.backUp.reviewDTOs;
             delete data.selectedRestaurant.reviewDTOs;

@@ -10,12 +10,13 @@ import {RestaurantList} from './components/restaurant-list';
 import {WaitIndicator} from './components/wait-indicator';
 import {RestaurantListRow} from './components/restaurant-list-row';
 import {EditRestaurantContainer} from './components/edit-restaurant-container';
+import {EditReviewDTOContainer} from './components/edit-reviewDTO-container'
 
 @NgModule({
   imports:      [ BrowserModule,FormsModule,ReactiveFormsModule,HttpModule],
   providers: [RestaurantService,PubSubService,RestaurantActionService],
  
-  declarations: [ RestaurantComponent ,RestaurantList,WaitIndicator,
+  declarations: [ RestaurantComponent ,RestaurantList,WaitIndicator,EditReviewDTOContainer,
   EditRestaurantContainer ,RestaurantListRow ],
   bootstrap:    [ RestaurantComponent ]
 })

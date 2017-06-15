@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -15,8 +23,20 @@ var pubsub_service_1 = require("./../services/pubsub.service");
 var forms_1 = require("@angular/forms");
 var EditReviewDTOContainer = (function () {
     function EditReviewDTOContainer(restaurantService, sub, fb) {
+        var _this = this;
         this.restaurantService = restaurantService;
         this.sub = sub;
+        this.backUp = null;
+        console.log("in review con");
+        var channel = sub.getChannel();
+        this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
+        this.subscription
+            .subscribe(function (data) {
+            console.log("reviews got " + data);
+            _this.backUp = __assign({}, data.selectedRestaurant);
+        }, function (error) {
+            console.log(JSON.stringify(error));
+        });
     }
     EditReviewDTOContainer.prototype.formOkay = function () {
         //return this.editForm.valid && !this.equalToBackup();
@@ -60,8 +80,8 @@ var EditReviewDTOContainer = (function () {
 }());
 EditReviewDTOContainer = __decorate([
     core_1.Component({
-        selector: 'edit-restaurant-container',
-        template: ""
+        selector: 'edit-reviewDTO-container',
+        template: "\n    <section [hidden]=\"backUp === null\" className=\"editReviewContainer\">\n    get a review job\n    </section>\n  \n  "
     }),
     __metadata("design:paramtypes", [restaurant_service_1.RestaurantService,
         pubsub_service_1.default, forms_1.FormBuilder])

@@ -40,7 +40,7 @@ RestaurantComponent = __decorate([
     core_1.Component({
         selector: 'restaurant-app',
         styles: [" \n\n     .restaurantApp   #mainDisplayMessage { \n       font-size: 20px;  \n       margin: 20px;\n       border: thin solid #ddd;\n       height: 40px;\n       \n      }\n\n    .restaurantApp   #mainDisplayMessage.success {\n      color: blue; }\n    .restaurantApp   #displayMessage.error {\n      color: red; }\n\n\n\n  "],
-        template: "\n  \n  <h3>Restaurant List</h3>\n  <div id=\"reactRestaurantContainer\">\n      <div class=\"restaurantApp grouping\">\n      <wait-indicator [isProcessing]=\"true\"></wait-indicator>\n      <div   id=\"mainDisplayMessage\">{{displayMessage}}</div>\n      <restaurant-list></restaurant-list>\n\n      <div id=\"#editControlGroup\" class=\"grouping\">\n\n        <edit-restaurant-container></edit-restaurant-container>\n\n      </div>\n\n\n      </div>\n  </div>\n \n  \n  "
+        template: "\n  \n  <h3>Restaurant List</h3>\n  <div id=\"reactRestaurantContainer\">\n      <div class=\"restaurantApp grouping\">\n      <wait-indicator [isProcessing]=\"true\"></wait-indicator>\n      <div   id=\"mainDisplayMessage\">{{displayMessage}}</div>\n      <restaurant-list></restaurant-list>\n\n      <div id=\"editControlGroup\" class=\"grouping\">\n\n        <edit-restaurant-container></edit-restaurant-container>\n        <edit-reviewDTO-container></edit-reviewDTO-container>\n        \n\n      </div>\n\n\n      </div>\n  </div>\n \n  \n  "
     }),
     __metadata("design:paramtypes", [restaurant_action_service_1.RestaurantActionService, pubsub_service_1.default])
 ], RestaurantComponent);

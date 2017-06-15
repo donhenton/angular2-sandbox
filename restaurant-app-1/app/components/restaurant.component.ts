@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RestaurantList } from './restaurant-list'
 import { EditRestaurantContainer } from './edit-restaurant-container'
+import {EditReviewDTOContainer} from './edit-reviewDTO-container'
 import { RestaurantActionService } from './../services/restaurant-action.service';
 import { WaitIndicator } from './wait-indicator';
 import PubSubService from './../services/pubsub.service';
@@ -37,9 +38,11 @@ import {FeedbackMessage} from './../model/restaurant.interface';
       <div   id="mainDisplayMessage">{{displayMessage}}</div>
       <restaurant-list></restaurant-list>
 
-      <div id="#editControlGroup" class="grouping">
+      <div id="editControlGroup" class="grouping">
 
         <edit-restaurant-container></edit-restaurant-container>
+        <edit-reviewDTO-container></edit-reviewDTO-container>
+        
 
       </div>
 

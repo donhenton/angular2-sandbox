@@ -82,7 +82,8 @@ var Channel = (function () {
             return this.subject(name);
         }
         // return stream
-        return this.channelStream.filter(function (obs) { return index_2.compareTopics(obs.name, name); }).mergeAll();
+        var item = this.channelStream.filter(function (obs) { return index_2.compareTopics(obs.name, name); }).mergeAll();
+        return item;
     };
     /**
      * Do a request that will be replied into returned Rx.AsyncSubject

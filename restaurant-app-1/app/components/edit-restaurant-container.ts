@@ -94,7 +94,7 @@ export class EditRestaurantContainer {
 
   constructor(private restaurantService: RestaurantService,
     private sub: PubSubService, fb: FormBuilder) {
-
+    console.log("in restaurant con")
 
     this.editForm = fb.group({
       city: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -119,7 +119,7 @@ export class EditRestaurantContainer {
     this.newSubject
       = channel.subject("new." + sub.getRestaurantEditTopic());
     //looking for add.update.* or edit.update.*
-    this.subscription = channel.observe("*.update." + sub.getRestaurantEditTopic());
+    this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
     this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
 
 
@@ -142,6 +142,7 @@ export class EditRestaurantContainer {
     this.subscription
       .subscribe(
       (data) => {
+        console.log("restaurant edit got "+data)
 
         this.backUp = { ...data.selectedRestaurant };
         delete this.backUp.reviewDTOs;
@@ -163,7 +164,7 @@ export class EditRestaurantContainer {
     );
 
   }
-
+ 
   log() {
     // console.log(this.editForm.value);
     console.log(` errors ${JSON.stringify(this.editForm.controls.city.errors)} min  ${this.editForm.controls.city.errors.minlength}`)

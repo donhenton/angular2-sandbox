@@ -89,7 +89,8 @@ class Channel {
             return this.subject(name);
         }
         // return stream
-        return this.channelStream.filter((obs) => compareTopics(obs.name, name)).mergeAll();
+        let item = this.channelStream.filter((obs) => compareTopics(obs.name, name)).mergeAll();
+        return item;
     }
 
     /**
