@@ -4,7 +4,7 @@ import { EditRestaurantContainer } from './edit-restaurant-container'
 import {EditReviewDTOContainer} from './edit-reviewDTO-container'
 import { RestaurantActionService } from './../services/restaurant-action.service';
 import { WaitIndicator } from './wait-indicator';
-import PubSubService from './../services/pubsub.service';
+import PubSubService,{PubSubSystem} from './../services/pubsub.service';
 import { Subject } from "rxjs/Subject";
 import {FeedbackMessage} from './../model/restaurant.interface';
 
@@ -57,10 +57,13 @@ export class RestaurantComponent {
 
   displayMessage: string;
   private subscription: Subject<any>;
-  constructor(actionService: RestaurantActionService, private sub: PubSubService) {
+  private sub:PubSubSystem;
 
-    var channel = sub.getChannel();
-    this.subscription = channel.observe(sub.getMessageTopic());
+  constructor(actionService: RestaurantActionService, private subProvider: PubSubService,) {
+
+    this.sub = subProvider.getService();
+    var channel = this.sub.getChannel();
+    this.subscription = channel.observe(this.sub.getMessageTopic());
 
     this.subscription
       .subscribe(

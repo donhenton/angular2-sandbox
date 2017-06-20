@@ -22,14 +22,22 @@ var restaurant_service_1 = require("./../services/restaurant.service");
 var pubsub_service_1 = require("./../services/pubsub.service");
 var forms_1 = require("@angular/forms");
 var EditReviewDTOContainer = (function () {
-    function EditReviewDTOContainer(restaurantService, sub, fb) {
+    function EditReviewDTOContainer(restaurantService, subProvider, fb) {
         var _this = this;
         this.restaurantService = restaurantService;
-        this.sub = sub;
         this.backUp = null;
-        console.log("in review con");
-        var channel = sub.getChannel();
-        this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
+        this.sub = subProvider.getService();
+        console.log("calling observe in dto edit");
+        var channel = this.sub.getChannel();
+        this.subscription = channel.observe("*.update." + this.sub.getRestaurantEditTopic());
+        console.log("got in dto container");
+        this.junkSubject = channel.observe("junk.*");
+        this.junkSubject
+            .subscribe(function (data) {
+            console.log("got junk in DTO");
+        }, function (error) {
+            console.log(JSON.stringify(error));
+        });
         this.subscription
             .subscribe(function (data) {
             console.log("reviews got " + data);

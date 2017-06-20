@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Restaurant } from './../model/restaurant.interface';
 import { RestaurantService } from './../services/restaurant.service';
-import PubSubService from './../services/pubsub.service';
+import PubSubService,{PubSubSystem} from './../services/pubsub.service';
 import { Subject } from "rxjs/Subject";
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 
@@ -88,14 +88,16 @@ export class EditRestaurantContainer {
   private newSubject: Subject<any>;
   private backUp: Restaurant = null;
   private actionState: string = null;
+  private junkSubject: Subject<any>;
+  private sub:PubSubSystem;
 
   editForm: FormGroup;
 
 
   constructor(private restaurantService: RestaurantService,
-    private sub: PubSubService, fb: FormBuilder) {
+    private subProvider: PubSubService, fb: FormBuilder) {
     console.log("in restaurant con")
-
+    this.sub = subProvider.getService();
     this.editForm = fb.group({
       city: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       state: ['', Validators.compose([Validators.required, Validators.minLength(2)])],
@@ -112,23 +114,38 @@ export class EditRestaurantContainer {
 
 
 
-    var channel = sub.getChannel();
+    var channel = this.sub.getChannel();
     this.saveSubject
-      = channel.subject("save." + sub.getRestaurantEditTopic());
+      = channel.subject("save." + this.sub.getRestaurantEditTopic());
 
     this.newSubject
-      = channel.subject("new." + sub.getRestaurantEditTopic());
+      = channel.subject("new." + this.sub.getRestaurantEditTopic());
     //looking for add.update.* or edit.update.*
-    this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
-    this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
+    this.subscription = channel.observe("*.update." + this.sub.getRestaurantEditTopic());
+    this.deleteRestaurantSubscription = channel.observe("delete." + this.sub.getRestaurantEditTopic());
+    console.log("calling observe in restaurant edit")
+    this.junkSubject = channel.observe("junk.*");
 
 
-     this.deleteRestaurantSubscription
+    this.junkSubject
       .subscribe(
       (data) => {
 
-          this.backUp = null;
-          this.editForm.reset();
+       console.log("got junk in restaurants")
+
+      },
+      (error) => {
+        console.log(JSON.stringify(error))
+      },
+
+    );
+
+    this.deleteRestaurantSubscription
+      .subscribe(
+      (data) => {
+
+        this.backUp = null;
+        this.editForm.reset();
 
       },
       (error) => {
@@ -138,24 +155,24 @@ export class EditRestaurantContainer {
     );
 
 
-
+     
     this.subscription
       .subscribe(
       (data) => {
-        console.log("restaurant edit got "+data)
+        console.log("restaurant edit got " + data)
 
         this.backUp = { ...data.selectedRestaurant };
         delete this.backUp.reviewDTOs;
-        delete data.selectedRestaurant.reviewDTOs;
+        //delete data.selectedRestaurant.reviewDTOs;
         this.editForm.reset();
-        this.editForm.setValue(data.selectedRestaurant);
+        this.editForm.setValue(this.backUp);
         if (data.selectedRestaurant.id < 0) {
           this.actionState = "ADD";
         }
         else {
           this.actionState = "EDIT";
         }
-
+        return data;
       },
       (error) => {
         console.log(JSON.stringify(error))
@@ -164,7 +181,7 @@ export class EditRestaurantContainer {
     );
 
   }
- 
+
   log() {
     // console.log(this.editForm.value);
     console.log(` errors ${JSON.stringify(this.editForm.controls.city.errors)} min  ${this.editForm.controls.city.errors.minlength}`)

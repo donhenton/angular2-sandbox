@@ -23,18 +23,19 @@ var restaurant_interface_1 = require("./../model/restaurant.interface");
 var core_1 = require("@angular/core");
 var FeedbackMessageImpl_1 = require("./../model/FeedbackMessageImpl");
 var RestaurantActionService = (function () {
-    function RestaurantActionService(restaurantService, sub) {
+    function RestaurantActionService(restaurantService, subProvider) {
         var _this = this;
         this.restaurantService = restaurantService;
-        this.sub = sub;
-        var channel = sub.getChannel();
-        this.feedbackSubject = channel.subject(sub.getMessageTopic());
-        this.waitRequestSubject = channel.subject(sub.getWaitTopic());
-        this.refreshListSubject = channel.subject(sub.getRefreshTopic());
-        this.editSubject = channel.subject("edit.update." + sub.getRestaurantEditTopic());
-        this.saveSubscription = channel.observe("save." + sub.getRestaurantEditTopic());
-        this.newRestaurantSubscription = channel.observe("new." + sub.getRestaurantEditTopic());
-        this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
+        this.subProvider = subProvider;
+        this.sub = subProvider.getService();
+        var channel = this.sub.getChannel();
+        this.feedbackSubject = channel.subject(this.sub.getMessageTopic());
+        this.waitRequestSubject = channel.subject(this.sub.getWaitTopic());
+        this.refreshListSubject = channel.subject(this.sub.getRefreshTopic());
+        this.editSubject = channel.subject("edit.update." + this.sub.getRestaurantEditTopic());
+        this.saveSubscription = channel.observe("save." + this.sub.getRestaurantEditTopic());
+        this.newRestaurantSubscription = channel.observe("new." + this.sub.getRestaurantEditTopic());
+        this.deleteRestaurantSubscription = channel.observe("delete." + this.sub.getRestaurantEditTopic());
         this.deleteRestaurantSubscription
             .subscribe(function (data) {
             _this.handleDelete(data);

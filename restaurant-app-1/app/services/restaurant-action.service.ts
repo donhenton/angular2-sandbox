@@ -1,4 +1,4 @@
-import PubSubService from './pubsub.service';
+import PubSubService,{PubSubSystem} from './pubsub.service';
 import { RestaurantService } from './restaurant.service';
 import { WaitRequest, Restaurant, messageType, RefreshMessage } from './../model/restaurant.interface';
 import { Injectable } from '@angular/core';
@@ -15,17 +15,20 @@ export class RestaurantActionService {
     private waitRequestSubject: Subject<WaitRequest>;
     private feedbackSubject: Subject<any>;
     private editSubject: Subject<any>;
-    constructor(private restaurantService: RestaurantService,
-        private sub: PubSubService) {
+    private sub:PubSubSystem;
 
-        var channel = sub.getChannel();
-        this.feedbackSubject = channel.subject(sub.getMessageTopic());
-        this.waitRequestSubject = channel.subject(sub.getWaitTopic());
-        this.refreshListSubject = channel.subject(sub.getRefreshTopic());
-        this.editSubject = channel.subject("edit.update." + sub.getRestaurantEditTopic());
-        this.saveSubscription = channel.observe("save." + sub.getRestaurantEditTopic());
-        this.newRestaurantSubscription = channel.observe("new." + sub.getRestaurantEditTopic());
-        this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
+    constructor(private restaurantService: RestaurantService,
+        private subProvider: PubSubService) {
+
+        this.sub = subProvider.getService();
+        var channel = this.sub.getChannel();
+        this.feedbackSubject = channel.subject(this.sub.getMessageTopic());
+        this.waitRequestSubject = channel.subject(this.sub.getWaitTopic());
+        this.refreshListSubject = channel.subject(this.sub.getRefreshTopic());
+        this.editSubject = channel.subject("edit.update." + this.sub.getRestaurantEditTopic());
+        this.saveSubscription = channel.observe("save." + this.sub.getRestaurantEditTopic());
+        this.newRestaurantSubscription = channel.observe("new." + this.sub.getRestaurantEditTopic());
+        this.deleteRestaurantSubscription = channel.observe("delete." + this.sub.getRestaurantEditTopic());
 
         this.deleteRestaurantSubscription
             .subscribe(

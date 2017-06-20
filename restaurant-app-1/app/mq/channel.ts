@@ -1,24 +1,26 @@
-import * as Rx from 'rxjs/Rx';
-
-import { EndlessSubject, EndlessReplaySubject } from './rx/index';
-import { findSubjectByName, compareTopics } from './utils/index';
+import Rx from 'rxjs/Rx';
+import {EndlessSubject, EndlessReplaySubject} from './rx/index';
+import {findSubjectByName, compareTopics} from './utils/index';
 
 /**
  * Rxmq channel class
  */
 class Channel {
 
-    utils: any;
-    subjects: any;
-    channelBus: any;
-    channelStream: any;
+    subjects:any[];
+    channelBus:any;
+    utils:any;
+    channelStream:any;
+    
+
+
     /**
-       * Represents a new Rxmq channel.
-       * Normally you wouldn't need to instantiate it directly, you'd just work with existing instance.
-       * @constructor
-       * @param  {Array}   plugins  Array of plugins for new channel
-       * @return {void}
-       */
+    * Represents a new Rxmq channel.
+    * Normally you wouldn't need to instantiate it directly, you'd just work with existing instance.
+    * @constructor
+    * @param  {Array}   plugins  Array of plugins for new channel
+    * @return {void}
+    */
     constructor(plugins = []) {
         /**
          * Internal set of utilities
@@ -48,7 +50,7 @@ class Channel {
          * @private
          */
         this.channelStream = this.channelBus.publish().refCount();
-
+        //this.channelStream = this.channelBus.share();
         // inject plugins
         plugins.map(this.registerPlugin.bind(this));
     }
@@ -61,7 +63,7 @@ class Channel {
      * const channel = rxmq.channel('test');
      * const subject = channel.subject('test.topic');
      */
-    subject(name, { Subject = EndlessSubject } = {}) {
+    subject(name, {Subject = EndlessSubject} = {}) {
         let s = this.utils.findSubjectByName(this.subjects, name);
         if (!s) {
             s = new Subject();
@@ -88,9 +90,26 @@ class Channel {
         if (name.indexOf('#') === -1 && name.indexOf('*') === -1) {
             return this.subject(name);
         }
+
+
+        // this.channelStream.forEach((obs) => {
+        //     //console.log("checking "+obs.name)
+        //     let res = compareTopics(obs.name, name);
+        //     console.log(`checking ${name} against registered ${obs.name} results ${res}`)
+        //     if (res)
+        //     {
+        //        // console.log("hit "+obs.name)
+        //        return obs;
+        //     }
+        // })
+
+        //this.subjects.push(s);
+        //this.channelBus.next(s);
+
+
+
         // return stream
-        let item = this.channelStream.filter((obs) => compareTopics(obs.name, name)).mergeAll();
-        return item;
+        return this.channelStream.filter((obs) => compareTopics(obs.name, name)).mergeAll();
     }
 
     /**
@@ -110,7 +129,7 @@ class Channel {
      *     // handle response
      * });
      */
-    request({ topic, data, Subject = Rx.AsyncSubject }) {
+    request({topic, data, Subject = Rx.AsyncSubject}) {
         const subj = this.utils.findSubjectByName(this.subjects, topic);
         if (!subj) {
             return Rx.Observable.never();
@@ -118,7 +137,7 @@ class Channel {
 
         // create reply subject
         const replySubject = new Subject();
-        subj.next({ replySubject, data });
+        subj.next({replySubject, data});
         return replySubject;
     }
 

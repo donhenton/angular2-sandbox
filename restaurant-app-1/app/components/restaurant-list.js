@@ -17,25 +17,28 @@ var restaurant_service_1 = require("./../services/restaurant.service");
 var restaurant_list_row_1 = require("./restaurant-list-row");
 var pubsub_service_1 = require("./../services/pubsub.service");
 var RestaurantList = (function () {
-    function RestaurantList(restaurantService, renderer, sub) {
+    function RestaurantList(restaurantService, renderer, subProvider) {
         var _this = this;
         this.restaurantService = restaurantService;
         this.renderer = renderer;
-        this.sub = sub;
+        this.subProvider = subProvider;
         this.isLoading = false;
         this.doRoll = false;
         this.selectedRowId = -1;
+        this.sub = subProvider.getService();
         this.restaurantList = [];
-        var channel = sub.getChannel();
+        var channel = this.sub.getChannel();
         this.deleteSubject
-            = channel.subject("delete." + sub.getRestaurantEditTopic());
+            = channel.subject("delete." + this.sub.getRestaurantEditTopic());
         this.editSubject
-            = channel.subject("edit.update." + sub.getRestaurantEditTopic());
+            = channel.subject("edit.update." + this.sub.getRestaurantEditTopic());
         this.addSubject
-            = channel.subject("add.update." + sub.getRestaurantEditTopic());
+            = channel.subject("add.update." + this.sub.getRestaurantEditTopic());
+        this.junkSubject
+            = channel.subject("junk." + this.sub.getRestaurantEditTopic());
         this.waitSubject
-            = channel.subject(sub.getWaitTopic());
-        this.refreshSubscription = channel.observe(sub.getRefreshTopic());
+            = channel.subject(this.sub.getWaitTopic());
+        this.refreshSubscription = channel.observe(this.sub.getRefreshTopic());
         this.refreshSubscription
             .subscribe(function (data) {
             console.log('got refresh message');
@@ -123,6 +126,7 @@ var RestaurantList = (function () {
         }
         else {
             this.editSubject.next(ev);
+            this.junkSubject.next("junk");
         }
     };
     return RestaurantList;

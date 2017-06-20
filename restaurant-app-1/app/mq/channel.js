@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rx = require("rxjs/Rx");
+var Rx_1 = require("rxjs/Rx");
 var index_1 = require("./rx/index");
 var index_2 = require("./utils/index");
 /**
@@ -8,12 +8,12 @@ var index_2 = require("./utils/index");
  */
 var Channel = (function () {
     /**
-       * Represents a new Rxmq channel.
-       * Normally you wouldn't need to instantiate it directly, you'd just work with existing instance.
-       * @constructor
-       * @param  {Array}   plugins  Array of plugins for new channel
-       * @return {void}
-       */
+    * Represents a new Rxmq channel.
+    * Normally you wouldn't need to instantiate it directly, you'd just work with existing instance.
+    * @constructor
+    * @param  {Array}   plugins  Array of plugins for new channel
+    * @return {void}
+    */
     function Channel(plugins) {
         if (plugins === void 0) { plugins = []; }
         /**
@@ -42,7 +42,8 @@ var Channel = (function () {
          * @type {Rx.Observable}
          * @private
          */
-        this.channelStream = this.channelBus.publish().refCount();
+        //this.channelStream = this.channelBus.publish().refCount();
+        this.channelStream = this.channelBus.share();
         // inject plugins
         plugins.map(this.registerPlugin.bind(this));
     }
@@ -81,9 +82,20 @@ var Channel = (function () {
         if (name.indexOf('#') === -1 && name.indexOf('*') === -1) {
             return this.subject(name);
         }
+        // this.channelStream.forEach((obs) => {
+        //     //console.log("checking "+obs.name)
+        //     let res = compareTopics(obs.name, name);
+        //     console.log(`checking ${name} against registered ${obs.name} results ${res}`)
+        //     if (res)
+        //     {
+        //        // console.log("hit "+obs.name)
+        //        return obs;
+        //     }
+        // })
+        //this.subjects.push(s);
+        //this.channelBus.next(s);
         // return stream
-        var item = this.channelStream.filter(function (obs) { return index_2.compareTopics(obs.name, name); }).mergeAll();
-        return item;
+        return this.channelStream.filter(function (obs) { return index_2.compareTopics(obs.name, name); }).mergeAll();
     };
     /**
      * Do a request that will be replied into returned Rx.AsyncSubject
@@ -103,10 +115,10 @@ var Channel = (function () {
      * });
      */
     Channel.prototype.request = function (_a) {
-        var topic = _a.topic, data = _a.data, _b = _a.Subject, Subject = _b === void 0 ? Rx.AsyncSubject : _b;
+        var topic = _a.topic, data = _a.data, _b = _a.Subject, Subject = _b === void 0 ? Rx_1.default.AsyncSubject : _b;
         var subj = this.utils.findSubjectByName(this.subjects, topic);
         if (!subj) {
-            return Rx.Observable.never();
+            return Rx_1.default.Observable.never();
         }
         // create reply subject
         var replySubject = new Subject();

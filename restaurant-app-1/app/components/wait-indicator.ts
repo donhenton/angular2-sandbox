@@ -1,6 +1,6 @@
-import PubSubService from './../services/pubsub.service';
+import PubSubService, { PubSubSystem } from './../services/pubsub.service';
 import { Subject } from "rxjs/Subject";
-import {WaitRequest} from './../model/restaurant.interface';
+import { WaitRequest } from './../model/restaurant.interface';
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
@@ -19,15 +19,19 @@ export class WaitIndicator {
 
   @Input() isProcessing: boolean = false;
   private subscription: Subject<any>;
-  constructor(private sub: PubSubService) {
-    var channel = sub.getChannel();
-   // console.log(`wait observing ${sub.getWaitTopic()}`)
-    this.subscription = channel.observe(sub.getWaitTopic());
+  private sub: PubSubSystem;
+
+  constructor(private subProvider: PubSubService) {
+
+    this.sub = subProvider.getService();
+    var channel = this.sub.getChannel();
+    // console.log(`wait observing ${sub.getWaitTopic()}`)
+    this.subscription = channel.observe(this.sub.getWaitTopic());
 
     this.subscription
       .subscribe(
-      (data:WaitRequest) => {
-        console.log("wait got "+JSON.stringify(data))
+      (data: WaitRequest) => {
+        console.log("wait got " + JSON.stringify(data))
         this.handleRequest(data);
 
       },

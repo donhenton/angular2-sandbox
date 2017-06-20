@@ -2,7 +2,7 @@ import { Component,ViewChildren,Renderer,Inject } from '@angular/core';
 import { Restaurant } from './../model/restaurant.interface';
 import { RestaurantService } from './../services/restaurant.service';
 import { RestaurantListRow } from './restaurant-list-row';
-import PubSubService from './../services/pubsub.service';
+import PubSubService,{PubSubSystem} from './../services/pubsub.service';
 import { Subject } from "rxjs/Subject";
 import { WaitRequest, RefreshMessage } from './../model/restaurant.interface';
 
@@ -53,27 +53,35 @@ export class RestaurantList {
     private restaurantList: Restaurant[];// cannot place in constructor for some reason
     private deleteSubject: Subject<any>;
     private editSubject: Subject<any>;
+    private junkSubject: Subject<any>;
     private addSubject: Subject<any>;
     private doRoll:boolean = false;
     private waitSubject: Subject<WaitRequest>;
     private selectedRowId = -1;
     private refreshSubscription: Subject<RefreshMessage>;
+    private sub:PubSubSystem;
+
+
+
     @ViewChildren(RestaurantListRow) rowItems: RestaurantListRow[];
 
     constructor(private restaurantService: RestaurantService, @Inject(Renderer) private renderer:Renderer,
-        private sub: PubSubService) {
+        private subProvider: PubSubService,) {
+        this.sub = subProvider.getService();    
         this.restaurantList = [];
-        var channel = sub.getChannel();
+        var channel = this.sub.getChannel();
         this.deleteSubject
-            = channel.subject("delete." + sub.getRestaurantEditTopic());
+            = channel.subject("delete." + this.sub.getRestaurantEditTopic());
         this.editSubject
-            = channel.subject("edit.update." + sub.getRestaurantEditTopic());
-         this.addSubject
-            = channel.subject("add.update." + sub.getRestaurantEditTopic());
+            = channel.subject("edit.update." + this.sub.getRestaurantEditTopic());
+        this.addSubject
+            = channel.subject("add.update." + this.sub.getRestaurantEditTopic());
+         this.junkSubject
+            = channel.subject("junk."+ this.sub.getRestaurantEditTopic());
         this.waitSubject
-            = channel.subject(sub.getWaitTopic());
+            = channel.subject(this.sub.getWaitTopic());
 
-        this.refreshSubscription = channel.observe(sub.getRefreshTopic());
+        this.refreshSubscription = channel.observe(this.sub.getRefreshTopic());
 
         this.refreshSubscription
             .subscribe(
@@ -204,6 +212,7 @@ export class RestaurantList {
         }
         else {
             this.editSubject.next(ev);
+            this.junkSubject.next("junk")
         }
 
 

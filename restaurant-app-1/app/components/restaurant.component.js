@@ -13,11 +13,12 @@ var core_1 = require("@angular/core");
 var restaurant_action_service_1 = require("./../services/restaurant-action.service");
 var pubsub_service_1 = require("./../services/pubsub.service");
 var RestaurantComponent = (function () {
-    function RestaurantComponent(actionService, sub) {
+    function RestaurantComponent(actionService, subProvider) {
         var _this = this;
-        this.sub = sub;
-        var channel = sub.getChannel();
-        this.subscription = channel.observe(sub.getMessageTopic());
+        this.subProvider = subProvider;
+        this.sub = subProvider.getService();
+        var channel = this.sub.getChannel();
+        this.subscription = channel.observe(this.sub.getMessageTopic());
         this.subscription
             .subscribe(function (data) {
             _this.handleMessage(data);

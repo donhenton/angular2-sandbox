@@ -12,13 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var pubsub_service_1 = require("./../services/pubsub.service");
 var core_1 = require("@angular/core");
 var WaitIndicator = (function () {
-    function WaitIndicator(sub) {
+    function WaitIndicator(subProvider) {
         var _this = this;
-        this.sub = sub;
+        this.subProvider = subProvider;
         this.isProcessing = false;
-        var channel = sub.getChannel();
+        this.sub = subProvider.getService();
+        var channel = this.sub.getChannel();
         // console.log(`wait observing ${sub.getWaitTopic()}`)
-        this.subscription = channel.observe(sub.getWaitTopic());
+        this.subscription = channel.observe(this.sub.getWaitTopic());
         this.subscription
             .subscribe(function (data) {
             console.log("wait got " + JSON.stringify(data));

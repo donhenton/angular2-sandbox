@@ -14,27 +14,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import {Observable} from 'rxjs/Observable';
 var core_1 = require("@angular/core");
 var index_1 = require("./../mq/index");
+var _service = null;
 var PubSubService = (function () {
     function PubSubService() {
-        this.channel = index_1.default.channel("messages");
+        console.log("in the constructor of the pubsubservice");
+        if (_service === null) {
+            _service = new PubSubServiceImpl();
+            console.log("created service in pubsub " + _service);
+        }
     }
-    PubSubService.prototype.getChannel = function () {
-        return this.channel;
-    };
-    PubSubService.prototype.getReviewEditTopic = function () {
-        return 'review.edit';
-    };
-    PubSubService.prototype.getRestaurantEditTopic = function () {
-        return 'restaurant.edit';
-    };
-    PubSubService.prototype.getWaitTopic = function () {
-        return 'wait.indicator';
-    };
-    PubSubService.prototype.getMessageTopic = function () {
-        return 'message.topic';
-    };
-    PubSubService.prototype.getRefreshTopic = function () {
-        return "refresh.request";
+    PubSubService.prototype.getService = function () {
+        return _service;
     };
     return PubSubService;
 }());
@@ -43,4 +33,29 @@ PubSubService = __decorate([
     __metadata("design:paramtypes", [])
 ], PubSubService);
 exports.default = PubSubService;
+var PubSubServiceImpl = (function () {
+    function PubSubServiceImpl() {
+        console.log("in the constructor assigning the channel");
+        this.channel = index_1.default.channel("messages");
+    }
+    PubSubServiceImpl.prototype.getChannel = function () {
+        return this.channel;
+    };
+    PubSubServiceImpl.prototype.getReviewEditTopic = function () {
+        return 'review.edit';
+    };
+    PubSubServiceImpl.prototype.getRestaurantEditTopic = function () {
+        return 'restaurant.edit';
+    };
+    PubSubServiceImpl.prototype.getWaitTopic = function () {
+        return 'wait.indicator';
+    };
+    PubSubServiceImpl.prototype.getMessageTopic = function () {
+        return 'message.topic';
+    };
+    PubSubServiceImpl.prototype.getRefreshTopic = function () {
+        return "refresh.request";
+    };
+    return PubSubServiceImpl;
+}());
 //# sourceMappingURL=pubsub.service.js.map

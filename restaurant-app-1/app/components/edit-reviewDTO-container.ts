@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Restaurant, ReviewDTOs } from './../model/restaurant.interface';
 import { RestaurantService } from './../services/restaurant.service';
-import PubSubService from './../services/pubsub.service';
+import PubSubService,{PubSubSystem} from './../services/pubsub.service';
 import { Subject } from "rxjs/Subject";
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 
@@ -19,14 +19,36 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
 export class EditReviewDTOContainer {
 
   private editForm: FormGroup;
+  private junkSubject: Subject<any>;
   private backUp: Restaurant = null;
   private subscription: Subject<any>;
-  constructor(private restaurantService: RestaurantService,
-    private sub: PubSubService, fb: FormBuilder) {
+  private sub:PubSubSystem;
 
-    console.log("in review con")
-    var channel = sub.getChannel();
-    this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
+  constructor(private restaurantService: RestaurantService,
+    subProvider: PubSubService, fb: FormBuilder) {
+
+    this.sub = subProvider.getService();  
+    console.log("calling observe in dto edit")
+    var channel = this.sub.getChannel();
+    this.subscription = channel.observe("*.update." + this.sub.getRestaurantEditTopic());
+    console.log("got in dto container")
+    this.junkSubject = channel.observe("junk.*");
+
+
+    this.junkSubject
+      .subscribe(
+      (data) => {
+
+        console.log("got junk in DTO")
+
+      },
+      (error) => {
+        console.log(JSON.stringify(error))
+      },
+
+    );
+
+
 
 
     this.subscription

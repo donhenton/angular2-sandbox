@@ -7,12 +7,50 @@ import {Restaurant} from './../model/restaurant.interface';
 import rr from './../mq/index';
 import {Channel} from './../mq/index';
 
+
+let _service:PubSubServiceImpl = null; 
+
 @Injectable()
 export default class PubSubService {
+ 
+  private service:PubSubServiceImpl
+  constructor()
+  {
+    console.log("in the constructor of the pubsubservice")
+    if(_service === null)
+    {
+        _service = new PubSubServiceImpl();
+        console.log("created service in pubsub "+_service)
+    }
+    
+  }
 
-    private channel:Channel;
+  getService():PubSubServiceImpl
+  {
+      return _service;
+  }
+
+}
+
+export interface PubSubSystem
+{
+    getChannel():Channel;
+    getReviewEditTopic():string;
+    getRestaurantEditTopic():string;
+    getWaitTopic():string;
+    getMessageTopic():string;
+    getRefreshTopic():string;
+
+}
+
+
+class PubSubServiceImpl implements PubSubSystem {
+
+
+  private channel:Channel;
     constructor()
     {
+         console.log("in the constructor assigning the channel")
          this.channel = rr.channel("messages");
          
     }
@@ -45,6 +83,7 @@ export default class PubSubService {
     {
         return "refresh.request";
     }
+
 
 }
 

@@ -22,13 +22,14 @@ var restaurant_service_1 = require("./../services/restaurant.service");
 var pubsub_service_1 = require("./../services/pubsub.service");
 var forms_1 = require("@angular/forms");
 var EditRestaurantContainer = (function () {
-    function EditRestaurantContainer(restaurantService, sub, fb) {
+    function EditRestaurantContainer(restaurantService, subProvider, fb) {
         var _this = this;
         this.restaurantService = restaurantService;
-        this.sub = sub;
+        this.subProvider = subProvider;
         this.backUp = null;
         this.actionState = null;
         console.log("in restaurant con");
+        this.sub = subProvider.getService();
         this.editForm = fb.group({
             city: ['', forms_1.Validators.compose([forms_1.Validators.required, forms_1.Validators.minLength(3)])],
             state: ['', forms_1.Validators.compose([forms_1.Validators.required, forms_1.Validators.minLength(2)])],
@@ -37,14 +38,22 @@ var EditRestaurantContainer = (function () {
             version: [1, forms_1.Validators.required],
             id: [-1]
         });
-        var channel = sub.getChannel();
+        var channel = this.sub.getChannel();
         this.saveSubject
-            = channel.subject("save." + sub.getRestaurantEditTopic());
+            = channel.subject("save." + this.sub.getRestaurantEditTopic());
         this.newSubject
-            = channel.subject("new." + sub.getRestaurantEditTopic());
+            = channel.subject("new." + this.sub.getRestaurantEditTopic());
         //looking for add.update.* or edit.update.*
-        this.subscription = channel.observe("#.update." + sub.getRestaurantEditTopic());
-        this.deleteRestaurantSubscription = channel.observe("delete." + sub.getRestaurantEditTopic());
+        this.subscription = channel.observe("*.update." + this.sub.getRestaurantEditTopic());
+        this.deleteRestaurantSubscription = channel.observe("delete." + this.sub.getRestaurantEditTopic());
+        console.log("calling observe in restaurant edit");
+        this.junkSubject = channel.observe("junk.*");
+        this.junkSubject
+            .subscribe(function (data) {
+            console.log("got junk in restaurants");
+        }, function (error) {
+            console.log(JSON.stringify(error));
+        });
         this.deleteRestaurantSubscription
             .subscribe(function (data) {
             _this.backUp = null;
@@ -57,15 +66,16 @@ var EditRestaurantContainer = (function () {
             console.log("restaurant edit got " + data);
             _this.backUp = __assign({}, data.selectedRestaurant);
             delete _this.backUp.reviewDTOs;
-            delete data.selectedRestaurant.reviewDTOs;
+            //delete data.selectedRestaurant.reviewDTOs;
             _this.editForm.reset();
-            _this.editForm.setValue(data.selectedRestaurant);
+            _this.editForm.setValue(_this.backUp);
             if (data.selectedRestaurant.id < 0) {
                 _this.actionState = "ADD";
             }
             else {
                 _this.actionState = "EDIT";
             }
+            return data;
         }, function (error) {
             console.log(JSON.stringify(error));
         });
